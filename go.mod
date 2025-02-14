@@ -3,8 +3,8 @@ module github.com/denis-kilchichakov/toolbox
 go 1.22.0
 
 require (
-	github.com/mattn/go-sqlite3 v1.14.22
-	github.com/stretchr/testify v1.9.0
+	github.com/mattn/go-sqlite3 v1.14.24
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
