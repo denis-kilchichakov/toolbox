@@ -3,6 +3,7 @@ package sqldb
 import (
 	"crypto/md5"
 	"database/sql"
+	"embed"
 	"fmt"
 	"log"
 	"os"
@@ -20,6 +21,34 @@ CREATE TABLE IF NOT EXISTS migrations (
 );
 `
 
+func (db *SqlDb) RunMigrationsFromEmbed(embedFS embed.FS) error {
+	log.Println("Running migrations from embedded files")
+	rootFiles, err := embedFS.ReadDir(".")
+	if err != nil {
+		return err
+	}
+
+	var sqlFiles []string
+	for _, rootFile := range rootFiles {
+		if rootFile.IsDir() {
+			dirFiles, err := embedFS.ReadDir(rootFile.Name())
+			if err != nil {
+				return err
+			}
+			for _, file := range dirFiles {
+				if !file.IsDir() && filepath.Ext(file.Name()) == ".sql" {
+					sqlFiles = append(sqlFiles, filepath.Join(rootFile.Name(), file.Name()))
+				}
+			}
+			break
+		}
+	}
+
+	sort.Strings(sqlFiles)
+
+	return db.runMigrationsCommon(sqlFiles, embedFS.ReadFile)
+}
+
 func (db *SqlDb) RunMigrations(migrationsPath string) error {
 	log.Println("Running migrations from: ", migrationsPath)
 	files, err := filepath.Glob(filepath.Join(migrationsPath, "*.sql"))
@@ -29,11 +58,15 @@ func (db *SqlDb) RunMigrations(migrationsPath string) error {
 
 	sort.Strings(files)
 
+	return db.runMigrationsCommon(files, os.ReadFile)
+}
+
+func (db *SqlDb) runMigrationsCommon(files []string, readFileFunc func(string) ([]byte, error)) error {
 	db.applyMigration(migrationsInitialScript)
 
 	for _, file := range files {
 		fileName := filepath.Base(file)
-		contents, err := os.ReadFile(file)
+		contents, err := readFileFunc(file)
 		if err != nil {
 			return err
 		}

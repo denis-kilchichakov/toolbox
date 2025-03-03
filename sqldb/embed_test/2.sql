@@ -1,0 +1,1 @@
+INSERT INTO test_migration_1 (a, b) VALUES ('foo', 42);
