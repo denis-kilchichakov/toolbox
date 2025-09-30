@@ -13,6 +13,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `go build` - Build the main module
 - `go mod tidy` - Clean up module dependencies
 
+### Versioning
+- `git tag v0.0.x` - Create a new semantic version tag
+- `git push origin v0.0.x` - Push tag to remote for use as Go module dependency
+- Other projects can import specific versions: `go get github.com/denis-kilchichakov/toolbox@v0.0.x`
+
 ## Architecture
 
 This is a modular Go utility library (`github.com/denis-kilchichakov/toolbox`) with distinct packages for common application needs:
