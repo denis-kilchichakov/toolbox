@@ -25,7 +25,7 @@ func main() {
 	if err := client.HealthCheck(ctx); err != nil {
 		log.Fatalf("Server is not healthy: %v", err)
 	}
-	fmt.Println("✓ Server is healthy\n")
+	fmt.Println("✓ Server is healthy")
 
 	// Example questions
 	questions := []string{

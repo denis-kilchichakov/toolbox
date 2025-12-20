@@ -10,6 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `go test -v ./...` - Run all tests with verbose output
 - `go test ./llm -run Mock` - Run only mock tests for llm package
 - `OLLAMA_TEST_URL=http://localhost:11434 OLLAMA_TEST_MODEL=llama3.2:latest go test ./llm -run Integration` - Run integration tests
+- `TELEGRAM_BOT_TOKEN=your_token go test ./telegram -run Integration` - Run telegram integration tests
 
 ### Build
 - `go build` - Build the main module
@@ -25,6 +26,7 @@ This is a modular Go utility library (`github.com/denis-kilchichakov/toolbox`) w
 - **`secret/`** - AES-256-GCM encryption/decryption for secret management
 - **`sqldb/`** - SQLite database wrapper with MD5-based migration tracking
 - **`system/`** - Signal handling utilities for graceful shutdown
+- **`telegram/`** - Telegram bot integration with channel-based update listening
 
 ### Key Design Patterns
 - Each package is self-contained with clear responsibilities
@@ -38,7 +40,8 @@ This is a modular Go utility library (`github.com/denis-kilchichakov/toolbox`) w
 
 ### Dependencies
 - **Database**: `github.com/mattn/go-sqlite3` for SQLite operations
-- **Notifications**: `github.com/nikoksr/notify` for Telegram integration  
+- **Notifications**: `github.com/nikoksr/notify` for Telegram integration
+- **Telegram Bot**: `github.com/go-telegram-bot-api/telegram-bot-api` for bot API
 - **Testing**: `github.com/stretchr/testify` for assertions and mocking
 
 ### Testing Strategy
@@ -51,7 +54,7 @@ This is a modular Go utility library (`github.com/denis-kilchichakov/toolbox`) w
 - Table-driven tests for comprehensive coverage
 
 ### Package-Specific Documentation
-- Some packages have their own `CLAUDE.md` for detailed guidance (e.g., `llm/CLAUDE.md`)
+- Some packages have their own `CLAUDE.md` for detailed guidance (e.g., `llm/CLAUDE.md`, `telegram/CLAUDE.md`)
 - Package-specific documentation includes implementation patterns, testing strategies, and common pitfalls
 - Refer to package CLAUDE.md when working within that package
 
