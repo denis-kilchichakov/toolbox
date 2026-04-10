@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"sync"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -28,6 +29,9 @@ type Config struct {
 
 	// Debug enables debug logging (default: false)
 	Debug bool
+
+	// HTTPClient is an optional custom HTTP client for the Telegram API (e.g. for proxy support)
+	HTTPClient *http.Client
 }
 
 // DefaultConfig returns a Config with sensible default values
@@ -60,7 +64,15 @@ func NewBot(config Config) (*Bot, error) {
 		config.Timeout = 60
 	}
 
-	api, err := tgbotapi.NewBotAPI(config.BotToken)
+	var (
+		api *tgbotapi.BotAPI
+		err error
+	)
+	if config.HTTPClient != nil {
+		api, err = tgbotapi.NewBotAPIWithClient(config.BotToken, config.HTTPClient)
+	} else {
+		api, err = tgbotapi.NewBotAPI(config.BotToken)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to create bot API: %w", err)
 	}
